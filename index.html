@@ -9,23 +9,35 @@
 </head>
 
 <header>
-  <div class="justify-space-between flex-row m-2">
-    <div id="high-score-btn" class="text-link">View high scores</div>
-    <div id="time-left">Time: 75</div>
+  <div class="justify-space-between flex-row mx-2 mt-2 mb-5">
+    <div id="high-score-btn" class="text-link pointer">View high scores</div>
+    <div>Time: <span id="time-left">75</span></div>
   </div>
 </header>
 
-<body class="bg-light text-primary text-center">
-  <div id="start-prompt">
+<body class="bg-dark text-light">
+  <div id="start-prompt" class="text-center">
     <h2 class="my-5">Coding Quiz Challenge</h2>
-    <p class="text-center my-auto">Try to answer the following 10 questions within the time limit!</p>
+    <p class="text-center my-auto">Try to answer the following 5 questions within the time limit!</p>
     <p class="text-center my-auto">Keep in mind each incorrect answer deducts your remaining time by 10 seconds.</p>
     <p class="text-center mb-5">You have 75 seconds.</p>
     <div id="start-btn" class="btn">Start</div>
   </div>
-
+  <div id="question-layout" class="mx-20">
+    <h2 class="my-5"></h2>
+    <div class="mx-5">
+      <p class="answer-option"></p>
+      <p class="answer-option"></p>
+      <p class="answer-option"></p>
+      <p class="answer-option"></p>
+    </div>
+  </div>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script type="text/javascript" src="./assets/js/script.js"></script>
 </body>
+
+<footer>
+  <div id="result"></div>
+</footer>
 
 </html>
