@@ -33,3 +33,24 @@
   -webkit-text-stroke-width: 0.01px;
   -webkit-text-stroke-color: #d9e9e8;
 }
+
+.italics {
+  font-style: italic;
+}
+
+.first {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  color: gold;
+}
+
+.second {
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: silver;
+}
+
+.third {
+  font-size: 1.3rem;
+  color: brown;
+}
