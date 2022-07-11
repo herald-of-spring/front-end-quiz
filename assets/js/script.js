@@ -41,23 +41,24 @@ var isDone = false;
 var qList = randomize(questions);
 
 function nextQ(index) {
-  if (index < qList.length) {
+  if (index < qList.length && timeLeft > 0) {
     $("#question-layout").append($("<h2>").addClass("mx-5").text(qList[index].prompt));
     var ansEl = $("<div>").addClass("mx-5");
     $("#question-layout").append(ansEl);
     //displays each answer, each belonging to class answer-option, and returns value on click
     var aList = randomize(qList[index].options);
+    console.log(qList[index].correct)
     for (var ans of aList) {
       ansEl.append($("<p>").addClass("answer-option").text(ans).on("click", function() {
-        if (this.text === qList[index].correct) {
-          $("#result").attr("class", "text-info").text("Correct!");
+        console.log($(this).html());
+        if ($(this).html() === qList[index].correct) {
+          $("#result").attr("class", "text-info").text("Correct!").fadeIn(0).fadeOut(1500);
         }
         else {
-          $("#result").attr("class", "text-danger").text("Incorrect!");
+          $("#result").attr("class", "text-danger").text("Incorrect!").fadeIn(0).fadeOut(1500);
           timeLeft -= 10;
         }
-        $("#question-layout").remove();
-        $("body").append($("<div>").addClass("mx-20").attr("id", "question-layout"));
+        $("#question-layout").empty();
         nextQ(index+1);
       }));
     }
@@ -87,38 +88,52 @@ function countdown() {
 var scoreboard = localStorage.getItem("scoreboard-names");
 
 function saveStats() {
-  $("body").append($("<h2>").addClass("text-center").text("You finished with a score of " + timeLeft));
-  $("body").append($("<div>").addClass("form").append($("<span>").text("Your Name: ")).append($("<input>")));
-  $("body").append($("<div>").addClass("button").text("Save").on("click", function() {
-    
-    localStorage.setItem("scoreboard", )
-    loadStats();
+  var saveWrapper = $("<div>").addClass("text-center");
+  $("#start-prompt").after(saveWrapper);
+  saveWrapper.append($("<h2>").addClass("my-5").text("You finished with a score of " + timeLeft));
+  saveWrapper.append($("<div>").addClass("mb-5").append($("<span>").text("Your Name: ")).append($("<input>").attr("id", "user-input")));
+  saveWrapper.append($("<div>").addClass("button").text("Save").on("click", function() {
+    if ($("#user-input").val() === "") {
+      var notice = $("<div>").addClass("mt-5").text("Name cannot be empty!");
+      saveWrapper.append(notice);
+      setTimeout(function() {
+        notice.fadeOut(1000, "linear", function() {
+          notice.empty();
+        });
+      }, 1000);
+    }
+    else {
+      localStorage.setItem("scoreboard", )
+      loadStats();
+      isDone = false;
+    }
   }));
 }
 
 function loadStats() {
-  var scoreWrapper = $("<div>").addClass("mx-20");
-  $("body").append(scoreWrapper);
   if (scoreboard === null) {
-    scoreWrapper.append($("<p>").addClass("text-center my-auto").text("Uh oh... no scores found!"));
-    scoreWrapper.append($("<p>").addClass("text-center my-auto").text("Why not play some games to populate the scoreboard?"));
+    $("#score-wrapper").append($("<h2>").addClass("my-5 text-center").text("Uh oh... no scores found!"));
+    $("#score-wrapper").append($("<p>").addClass("text-center my-auto").text("Why not play some games to populate the scoreboard?"));
   }
   else {
-    console.log("unimplemented");
+    $("#score-wrapper").append($("<h2>").addClass("my-5 text-center").text("Local Leaderboard"));
   }
-  scoreWrapper.append($("<div>").addClass("button").text("Back").on("click", function () {
-    scoreWrapper.remove();
-    $("#start-prompt").css("display", "none");
+  $("#score-wrapper").append($("<div>").addClass("button text-center").text("Back").on("click", function () {
+    $("#score-wrapper").empty();
+    $("#start-prompt").css("display", "block");
+    $("#high-score-btn").attr("disabled", false);
   }));
 }
 
 $("#start-btn").on("click", function() {
   $("#start-prompt").css("display", "none");
+  $("#high-score-btn").attr("disabled", true);
   countdown();
   nextQ(0);
 });
 
 $("#high-score-btn").on("click", function() {
   $("#start-prompt").css("display", "none");
+  $("#high-score-btn").attr("disabled", true);
   loadStats();
 })

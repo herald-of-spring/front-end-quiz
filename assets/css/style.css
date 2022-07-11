@@ -33,11 +33,3 @@
   -webkit-text-stroke-width: 0.01px;
   -webkit-text-stroke-color: #d9e9e8;
 }
-
-.correct {
-  color: lawngreen;
-}
-
-.incorrect {
-  color: red;
-}
