@@ -36,79 +36,89 @@ var questions = [
   },
 ];
 
-timeLeft = 75;
-isDone = false;
-hasResponded = false;
+var timeLeft = 75;
+var isDone = false;
+var qList = randomize(questions);
 
-function displayQuestions() {
-  var layout = $("<div>").addClass("mx-20");
-  $("body").append(layout);
-  qList = randomize(questions);
-  for (q of qList) {
-    console.log(q.prompt);
-    layout.append($("<h2>").addClass("mx-5").text(q.prompt));
-    console.log(layout);
-    layout.append($("<div>").addClass("mx-5"));
+function nextQ(index) {
+  if (index < qList.length) {
+    $("#question-layout").append($("<h2>").addClass("mx-5").text(qList[index].prompt));
+    var ansEl = $("<div>").addClass("mx-5");
+    $("#question-layout").append(ansEl);
     //displays each answer, each belonging to class answer-option, and returns value on click
-    aList = randomize(q.options);
-    for (ans of aList) {
-      layout.children().eq(1).append($("<p>").addClass("answer-option").text(ans).on("click", function() {
-        if (this.text === q.correct) {
-          logCorrect();
+    var aList = randomize(qList[index].options);
+    for (var ans of aList) {
+      ansEl.append($("<p>").addClass("answer-option").text(ans).on("click", function() {
+        if (this.text === qList[index].correct) {
+          $("#result").attr("class", "text-info").text("Correct!");
         }
         else {
-          logIncorrect();
+          $("#result").attr("class", "text-danger").text("Incorrect!");
+          timeLeft -= 10;
         }
-        hasResponded = true;
+        $("#question-layout").remove();
+        $("body").append($("<div>").addClass("mx-20").attr("id", "question-layout"));
+        nextQ(index+1);
       }));
     }
-    waitResponse();
-    hasResponded = false;
-    layout.remove();
   }
-  isDone = true;
-}
-
-function waitResponse() {
-  wait = setInterval(function() {
-    if (hasResponded === true) {
-      clearInterval(wait);
-    }
-  }, 100); 
-}
-
-function logCorrect() {
-  $("#result").attr("class", "text-info").text("Correct!");
-}
-
-function logIncorrect() {
-  $("#result").attr("class", "text-danger").text("Incorrect!");
-  timeLeft -= 10;
+  else {    //all questions answered
+    isDone = true;
+  }
 }
 
 function countdown() {
   timer = setInterval(function() {
     timeLeft--;
-    $("#time-left").text(timeLeft);
-    if (timeLeft >= 0) {
-      if (isDone && timeLeft > 0) {
-        clearInterval(timer);
-        saveStats(timeLeft);
-      }
+    if (timeLeft < 0) {
+      timeLeft = 0;
     }
-    if (timeLeft === 0) {
+    $("#time-left").text(timeLeft);
+    if (isDone || timeLeft === 0) {
       clearInterval(timer);
+      if (timeLeft < 0) {
+        timeLeft = 0;
+      } 
       saveStats(timeLeft);
     }
   }, 1000);
 }
 
+var scoreboard = localStorage.getItem("scoreboard-names");
+
 function saveStats() {
-  //do nothing
+  $("body").append($("<h2>").addClass("text-center").text("You finished with a score of " + timeLeft));
+  $("body").append($("<div>").addClass("form").append($("<span>").text("Your Name: ")).append($("<input>")));
+  $("body").append($("<div>").addClass("button").text("Save").on("click", function() {
+    
+    localStorage.setItem("scoreboard", )
+    loadStats();
+  }));
+}
+
+function loadStats() {
+  var scoreWrapper = $("<div>").addClass("mx-20");
+  $("body").append(scoreWrapper);
+  if (scoreboard === null) {
+    scoreWrapper.append($("<p>").addClass("text-center my-auto").text("Uh oh... no scores found!"));
+    scoreWrapper.append($("<p>").addClass("text-center my-auto").text("Why not play some games to populate the scoreboard?"));
+  }
+  else {
+    console.log("unimplemented");
+  }
+  scoreWrapper.append($("<div>").addClass("button").text("Back").on("click", function () {
+    scoreWrapper.remove();
+    $("#start-prompt").css("display", "none");
+  }));
 }
 
 $("#start-btn").on("click", function() {
   $("#start-prompt").css("display", "none");
   countdown();
-  displayQuestions();
+  nextQ(0);
 });
+
+$("#high-score-btn").on("click", function() {
+  $("#start-prompt").css("display", "none");
+  loadStats();
+})

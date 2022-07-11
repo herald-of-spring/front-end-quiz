@@ -7,16 +7,31 @@
   margin-right: 20%;
 }
 
-.answer-option {
+.answer-option, .button {
   background-color: blueviolet;
   border-radius: 0.3rem;
   padding: 1%;
   cursor: pointer;
-  width: 60%
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  width: fit-content;
 }
 
-.answer-option:hover {
+.button {
+  text-align: center;
+  display: inline-block;
+}
+
+.answer-option {
+  width: 60%;
+}
+
+.answer-option:hover, .button:hover {
   background-color: rgb(125, 13, 230);
+}
+
+.white-outline {
+  -webkit-text-stroke-width: 0.01px;
+  -webkit-text-stroke-color: #d9e9e8;
 }
 
 .correct {
