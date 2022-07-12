@@ -1,6 +1,6 @@
 //Using Durstenfeld shuffle to randomize array ordering: used to randomize questions and answers
 function randomize(array) {
-  temp = array.splice(0);
+  temp = array.slice(0);
   for (var i = temp.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
     [temp[i], temp[j]] = [temp[j], temp[i]];
@@ -96,50 +96,55 @@ function saveStats() {
   $("#save-wrapper").append(
     $("<div>").addClass("mb-5").append(
       $("<span>").text("Your Name: ")).append(
-      $("<input>").attr("id", "user-input")));
-  $("#save-wrapper").append(
-    $("<div>").addClass("button").text("Save")
-    .on("click", function() {
-    if ($("#user-input").val() === "") {
-      var notice = $("<div>").addClass("mt-5").text("Name cannot be empty!");
-      $("#save-wrapper").append(notice);
-      setTimeout(function() {
-        notice.fadeOut(1000, "linear", function() {
-          notice.empty();
-        });
-      }, 1000);
-    }
-    else {
-      scoreboard = JSON.parse(localStorage.getItem("scoreboard"));
-      if (scoreboard === null) {
-        scoreboard = {
-          names: [$("#user-input").val()],
-          scores: [timeLeft],
+      $("<input>").attr("id", "user-input").attr("type", "text")).append(
+      $("<br>")).append(
+      $("<div>").addClass("button text-light mt-5").text("Save")
+      .on("click", function() {
+        console.log($("#user-input").val());
+        if ($("#user-input").val() === "") {
+          var notice = $("<div>").addClass("mt-5").text("Name cannot be empty!");
+          $("#save-wrapper").append(notice);
+          setTimeout(function() {
+            notice.fadeOut(1000, "linear", function() {
+              notice.empty();
+            });
+          }, 1000);
         }
-      }
-      else {
-        for (var i in scoreboard.names) {
-          if (timeLeft >= scoreboard.scores[i]) {
-            scoreboard.scores.splice(i, 0, timeLeft);
-            scoreboard.names.splice(i, 0, $("#user-input").val());
-            break;
+        else {
+          scoreboard = JSON.parse(localStorage.getItem("scoreboard"));
+          if (scoreboard === null) {
+            scoreboard = {
+              names: [$("#user-input").val()],
+              scores: [timeLeft],
+            }
           }
+          else {
+            for (var i in scoreboard.names) {
+              if (timeLeft >= scoreboard.scores[i]) {
+                scoreboard.scores.splice(i, 0, timeLeft);
+                scoreboard.names.splice(i, 0, $("#user-input").val());
+                break;
+              }
+            }
+            //only saves top 10
+            while (scoreboard.scores.length > 10) {
+              scoreboard.scores.pop();
+              scoreboard.names.pop();
+            }
+          }
+          localStorage.setItem("scoreboard", JSON.stringify(scoreboard));
+          $("#save-wrapper").empty();
+          loadStats();
         }
-        //only saves top 10
-        while (scoreboard.scores.length > 10) {
-          scoreboard.scores.pop();
-          scoreboard.names.pop();
-        }
-      }
-      localStorage.setItem("scoreboard", JSON.stringify(scoreboard));
-      $("#save-wrapper").empty();
-      loadStats();
-    }
-  }));
+      })
+    )
+  );
 }
 
 function loadStats() {
+  //reset variables for replayability
   $("#time-left").text("75");
+  console.log("reset values");
   scoreboard = JSON.parse(localStorage.getItem("scoreboard"));
   if (scoreboard === null) {
     $("#score-wrapper").append(
@@ -152,13 +157,17 @@ function loadStats() {
       $("<h2>").addClass("my-5").text("Local Top 10"));
     $("#score-wrapper").append(
       $("<div>").addClass("mt-5 justify-space-between flex-row").append(
-        $("<h4>").text("Name")).append(
-        $("<h3>").text("Score")));
+        $("<h3>").text("Name")).append(
+        $("<h3>").text("Score")
+      )
+    );
     for (var i in scoreboard.names) {
       $("#score-wrapper").append(
         $("<div>").addClass("my-3 justify-space-between flex-row").append(
           $("<div>").text((parseInt(i)+1) + ". " + scoreboard.names[i])).append(
-          $("<div>").text(scoreboard.scores[i])));
+          $("<div>").text(scoreboard.scores[i])
+        )
+      );
     }
     $("#score-wrapper").children().eq(2).addClass("first");
     $("#score-wrapper").children().eq(3).addClass("second");
@@ -167,17 +176,18 @@ function loadStats() {
   $("#score-wrapper").append(
     $("<div>").addClass("button").text("Back")
     .on("click", function () {
-    $("#score-wrapper").empty();
-    $("#start-prompt").css("display", "block");
-    $("#high-score-btn").css("pointer-events", "auto");
-  }));
+      $("#score-wrapper").empty();
+      $("#start-prompt").css("display", "block");
+      $("#high-score-btn").css("pointer-events", "auto");
+    })
+  );
 }
 
 //hides start menu and disables clicking to leaderboards
 $("#start-btn").on("click", function() {
-  timeLeft = 75;
-  isDone = false;
   qList = randomize(questions);
+  isDone = false;
+  timeLeft = 75;
   $("#start-prompt").css("display", "none");
   $("#high-score-btn").css("pointer-events", "none");
   countdown();
