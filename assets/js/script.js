@@ -118,12 +118,18 @@ function saveStats() {
             }
           }
           else {
+            var added = false;
             for (var i in scoreboard.names) {
               if (timeLeft >= scoreboard.scores[i]) {
                 scoreboard.scores.splice(i, 0, timeLeft);
                 scoreboard.names.splice(i, 0, $("#user-input").val());
+                added = true;
                 break;
               }
+            }
+            if (added === false) {
+              scoreboard.scores.push(timeLeft);
+              scoreboard.names.push($("#user-input").val());
             }
             //only saves top 10
             while (scoreboard.scores.length > 10) {
