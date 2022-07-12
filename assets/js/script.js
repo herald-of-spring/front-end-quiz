@@ -100,7 +100,6 @@ function saveStats() {
       $("<br>")).append(
       $("<div>").addClass("button text-light mt-5").text("Save")
       .on("click", function() {
-        console.log($("#user-input").val());
         if ($("#user-input").val() === "") {
           var notice = $("<div>").addClass("mt-5").text("Name cannot be empty!");
           $("#save-wrapper").append(notice);
@@ -144,7 +143,6 @@ function saveStats() {
 function loadStats() {
   //reset variables for replayability
   $("#time-left").text("75");
-  console.log("reset values");
   scoreboard = JSON.parse(localStorage.getItem("scoreboard"));
   if (scoreboard === null) {
     $("#score-wrapper").append(
