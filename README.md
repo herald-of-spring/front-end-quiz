@@ -1,6 +1,3 @@
-# front-end-quiz
-Works in browser, uses HTML, CSS, Javascript to store and display data
-
 # Browser Based Dynamic DevQuiz
 5 questions. 75 seconds. Show off your best times on the local leaderboard!
 
