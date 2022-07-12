@@ -170,7 +170,7 @@ function loadStats() {
         $("<div>").addClass("my-3 justify-space-between flex-row").append(
           $("<div>").text((parseInt(i)+1) + ". " + scoreboard.names[i])).append(
           $("<div>").text(scoreboard.scores[i])
-        )
+        ).fadeOut(0)
       );
     }
     $("#score-wrapper").children().eq(2).addClass("first");
@@ -183,8 +183,16 @@ function loadStats() {
       $("#score-wrapper").empty();
       $("#start-prompt").css("display", "block");
       $("#high-score-btn").css("pointer-events", "auto");
-    })
+    }).fadeOut(0)
   );
+  var c = 2;
+    var animate = setInterval(function () {
+      $("#score-wrapper").children().eq(c).fadeIn(1000);
+      if (c == $("#score-wrapper").children().length) {
+        clearInterval(animate);
+      }
+      c++;
+    }, 500);
 }
 
 //hides start menu and disables clicking to leaderboards
