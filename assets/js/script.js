@@ -12,7 +12,7 @@ var questions = [
   {
     prompt: "The condition in an if/else statement is enclosed with _____.",
     options: ["quotes", "curly brackets", "parentheses", "square brackets"],
-    correct: "curly brackets",
+    correct: "parentheses",
   },
   {
     prompt: "Commonly used data types in the DOM DO NOT include _____.",
